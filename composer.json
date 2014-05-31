@@ -1,0 +1,19 @@
+{
+    "name": "iakio/growl",
+    "authors": [
+        {
+            "name": "ISHIDA Akio",
+            "email": "iakio.monospacenet@gmail.com"
+        }
+    ],
+    "description": "Simple GNTP implementation",
+    "license": "MIT",
+    "autoload": {
+        "psr-0": {
+            "iakio\\growl": "src"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*"
+    }
+}
