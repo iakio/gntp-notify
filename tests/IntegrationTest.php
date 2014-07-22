@@ -5,6 +5,8 @@ use iakio\growl\IO;
 
 class IntegrationTest extends \PHPUnit_Framework_TestCase
 {
+    private $io;
+
     function setUp()
     {
         $host = 'localhost';
@@ -18,6 +20,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
         $gntp = new GNTP($this->io);
         $gntp->applicationName("app")
             ->addNotification("notifytype1")
+            ->applicationIcon(__DIR__ . "/resources/pass.png")
             ->register();
         $gntp->notify("notifytype1", "title", "text");
     }
