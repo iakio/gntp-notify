@@ -5,59 +5,63 @@ namespace iakio\growl;
 class GNTP
 {
     private $io;
-    private $application_name;
+    private $applicationName;
     private $notifications;
-    private $application_icon;
+    private $applicationIcon;
+    private $resources;
 
     public function __construct(IO $io)
     {
         $this->io = $io;
-        $this->application_name = '';
+        $this->applicationName = '';
         $this->notifications = array();
+        $this->resources = array();
     }
 
     public function applicationName($name)
     {
-        $this->application_name = $name;
+        $this->applicationName = $name;
         return $this;
     }
 
     public function applicationIcon($icon)
     {
-        $this->application_icon = $icon;
+        $this->applicationIcon = $icon;
         return $this;
     }
 
-    public function addNotification($notification)
+    public function addNotification($name, $icon = null)
     {
-        $this->notifications[] = $notification;
+        $this->notifications[$name] = array('icon' => $icon);
         return $this;
     }
 
     public function register()
     {
-        $resources = [];
+        $this->resources = array();
         $this->io->connect();
         $this->io->send("GNTP/1.0 REGISTER NONE");
-        $this->io->send("Application-Name: " . $this->application_name);
-        if ($this->application_icon) {
-            $bin = file_get_contents($this->application_icon);
-            $hash = md5($bin);
+        $this->io->send("Application-Name: " . $this->applicationName);
+        if ($this->applicationIcon) {
+            $hash = $this->addResource($this->applicationIcon);
             $this->io->send("Application-Icon: x-growl-resource://" . $hash);
-            $resources[$hash] = $bin;
         }
         $this->io->send("Notifications-Count: " . count($this->notifications));
         $this->io->send("");
-        foreach ($this->notifications as $notification) {
-            $this->io->send("Notification-Name: " . $notification);
+        foreach ($this->notifications as $name => $notification) {
+            $this->io->send("Notification-Name: " . $name);
+            if ($notification['icon']) {
+                $hash = $this->addResource($notification['icon']);
+                $this->io->send("Notification-Icon: x-growl-resource://" . $hash);
+            }
             $this->io->send("Notification-Enabled: True");
             $this->io->send("");
         }
-        foreach ($resources as $id => $resource) {
-            $this->io->send("Identifier: " . $id);
-            $this->io->send("Length: " . strlen($resource));
+        foreach ($this->resources as $resource) {
+            $this->io->send("Identifier: " . $resource['hash']);
+            $this->io->send("Length: " . strlen($resource['bin']));
             $this->io->send("");
-            $this->io->sendBin($resource);
+            $this->io->sendBin($resource['bin']);
             $this->io->send("");
         }
         $this->io->send("");
@@ -68,9 +72,10 @@ class GNTP
 
     public function notify($name, $title, $text)
     {
+        $this->resources = array();
         $this->io->connect();
         $this->io->send("GNTP/1.0 NOTIFY NONE");
-        $this->io->send("Application-Name: " . $this->application_name);
+        $this->io->send("Application-Name: " . $this->applicationName);
         $this->io->send("Notification-Name: " . $name);
         $this->io->send("Notification-Title: " . $title);
         $this->io->send("Notification-Text: " . $text);
@@ -96,5 +101,13 @@ class GNTP
             $response = "ERROR";
             return $response;
         }
+    }
+
+    public function addResource($file)
+    {
+        $bin = file_get_contents($file);
+        $hash = md5($bin);
+        $this->resources[$file] = array('bin' => $bin, 'hash' => $hash);
+        return $hash;
     }
 }

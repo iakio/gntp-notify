@@ -19,10 +19,11 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
     {
         $gntp = new GNTP($this->io);
         $gntp->applicationName("app")
-            ->addNotification("notifytype1")
-            ->applicationIcon(__DIR__ . "/resources/pass.png")
+            ->addNotification("notifytype1", __DIR__ . "/resources/ng.png")
+            ->applicationIcon(__DIR__ . "/resources/ok.png")
             ->register();
-        $gntp->notify("notifytype1", "title", "text");
+        $result =$gntp->notify("notifytype1", "title", "text");
+        $this->assertEquals("OK", $result);
     }
 
 }
