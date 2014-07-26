@@ -6,15 +6,12 @@
             "email": "iakio.monospacenet@gmail.com"
         }
     ],
-    "description": "Simple GNTP implementation",
+    "description": "Simple GNTP notification library",
     "keywords": ["growl", "gntp", "notification"],
     "license": "MIT",
     "autoload": {
         "psr-0": {
             "iakio\\GntpNotify": "src"
         }
-    },
-    "require-dev": {
-        "phpunit/phpunit": "*"
     }
 }
