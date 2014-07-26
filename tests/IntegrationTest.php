@@ -3,6 +3,9 @@
 use iakio\GntpNotify\GNTP;
 use iakio\GntpNotify\IO;
 
+/**
+ * @group integration
+ */
 class IntegrationTest extends \PHPUnit_Framework_TestCase
 {
     private $io;

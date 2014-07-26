@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="vendor/autoload.php">
+<phpunit bootstrap="tests/bootstrap.php">
     <testsuites>
         <testsuite name="gntp-notify">
             <directory>tests</directory>
         </testsuite>
     </testsuites>
+    <groups>
+        <exclude>
+            <group>integration</group>
+        </exclude>
+    </groups>
 </phpunit>
