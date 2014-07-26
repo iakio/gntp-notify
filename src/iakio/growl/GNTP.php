@@ -6,85 +6,54 @@ class GNTP
 {
     private $io;
     private $applicationName;
-    private $notifications;
-    private $applicationIcon;
-    private $resources;
 
-    public function __construct(IO $io)
+    public function __construct($applicationName, IO $io = null)
     {
-        $this->io = $io;
-        $this->applicationName = '';
-        $this->notifications = array();
-        $this->resources = array();
-    }
-
-    public function applicationName($name)
-    {
-        $this->applicationName = $name;
-        return $this;
-    }
-
-    public function applicationIcon($icon)
-    {
-        $this->applicationIcon = $icon;
-        return $this;
-    }
-
-    public function addNotification($name, $icon = null)
-    {
-        $this->notifications[$name] = array('icon' => $icon);
-        return $this;
-    }
-
-    public function register()
-    {
-        $this->resources = array();
-        $this->io->connect();
-        $this->io->send("GNTP/1.0 REGISTER NONE");
-        $this->io->send("Application-Name: " . $this->applicationName);
-        if ($this->applicationIcon) {
-            $hash = $this->addResource($this->applicationIcon);
-            $this->io->send("Application-Icon: x-growl-resource://" . $hash);
+        if (empty($io)) {
+            $this->io = new IO();
+        } else {
+            $this->io = $io;
         }
-        $this->io->send("Notifications-Count: " . count($this->notifications));
-        $this->io->send("");
-        foreach ($this->notifications as $name => $notification) {
-            $this->io->send("Notification-Name: " . $name);
-            if ($notification['icon']) {
-                $hash = $this->addResource($notification['icon']);
-                $this->io->send("Notification-Icon: x-growl-resource://" . $hash);
+        $this->applicationName = $applicationName;
+    }
+
+    /**
+     * Shortcut method
+     *
+     * @param string $notificationName
+     * @param string $notificationTitle
+     * @param string $notificationText
+     * @param array $options
+     * @return string
+     */
+    public function sendNotify($notificationName, $notificationTitle, $notificationText, $options = array())
+    {
+        $notification_options = $options;
+        $notification_options['text'] = $notificationText;
+        $notify = new NotificationRequest($this->applicationName, $notificationName, $notificationTitle, $notification_options);
+        $result = $this->send($notify);
+        if ($result->getErrorCode() === "401" or $result->getErrorCode() === "402") {
+            // UNKNOWN_APPLICATION or UNKNOWN_NOTIFICATION
+            $register = new RegisterRequest($this->applicationName);
+            $register->addNotification($notificationName);
+            $result = $this->send($register);
+            if ($result->getStatus() === "-OK") {
+                $result = $this->send($notify);
             }
-            $this->io->send("Notification-Enabled: True");
-            $this->io->send("");
         }
-        foreach ($this->resources as $resource) {
-            $this->io->send("Identifier: " . $resource['hash']);
-            $this->io->send("Length: " . strlen($resource['bin']));
-            $this->io->send("");
-            $this->io->sendBin($resource['bin']);
-            $this->io->send("");
-        }
-        $this->io->send("");
-
-        $response = $this->waitAndClose();
-        return $response;
+        return $result->getStatus();
     }
 
-    public function notify($name, $title, $text)
+
+    public function send(GNTPRequest $request)
     {
-        $this->resources = array();
         $this->io->connect();
-        $this->io->send("GNTP/1.0 NOTIFY NONE");
-        $this->io->send("Application-Name: " . $this->applicationName);
-        $this->io->send("Notification-Name: " . $name);
-        $this->io->send("Notification-Title: " . $title);
-        $this->io->send("Notification-Text: " . $text);
-        $this->io->send("");
-        $this->io->send("");
+        $request->send($this->io);
 
         $response = $this->waitAndClose();
         return $response;
     }
+
 
     protected  function waitAndClose()
     {
@@ -94,20 +63,8 @@ class GNTP
             $lines[] = $line;
         } while ($line !== false);
         $this->io->disconnect();
-        if (preg_match('|^GNTP/1.0 -OK|', $lines[0])) {
-            $response = "OK";
-            return $response;
-        } else {
-            $response = "ERROR";
-            return $response;
-        }
-    }
-
-    public function addResource($file)
-    {
-        $bin = file_get_contents($file);
-        $hash = md5($bin);
-        $this->resources[$file] = array('bin' => $bin, 'hash' => $hash);
-        return $hash;
+        $response = new GNTPResponse();
+        $response->parse($lines);
+        return $response;
     }
 }

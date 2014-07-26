@@ -18,7 +18,7 @@ class IO
 
     public function send($msg)
     {
-        fwrite($this->fd, $msg . "\r\n");
+        fwrite($this->fd, str_replace("\r\n", "\n", $msg) . "\r\n");
         if ($this->debug) echo $msg . "\n";
     }
 
