@@ -1,6 +1,6 @@
 <?php
 
-namespace iakio\growl;
+namespace iakio\GntpNotify;
 
 class GNTP
 {

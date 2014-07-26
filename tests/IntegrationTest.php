@@ -1,7 +1,7 @@
 <?php
 
-use iakio\growl\GNTP;
-use iakio\growl\IO;
+use iakio\GntpNotify\GNTP;
+use iakio\GntpNotify\IO;
 
 class IntegrationTest extends \PHPUnit_Framework_TestCase
 {

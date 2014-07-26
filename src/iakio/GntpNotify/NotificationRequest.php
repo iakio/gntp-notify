@@ -1,5 +1,5 @@
 <?php
-namespace iakio\growl;
+namespace iakio\GntpNotify;
 
 
 class NotificationRequest extends GNTPRequest {

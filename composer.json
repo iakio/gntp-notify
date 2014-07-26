@@ -1,5 +1,5 @@
 {
-    "name": "iakio/growl",
+    "name": "iakio/gntp-notify",
     "authors": [
         {
             "name": "ISHIDA Akio",
@@ -7,10 +7,11 @@
         }
     ],
     "description": "Simple GNTP implementation",
+    "keywords": ["growl", "gntp", "notification"],
     "license": "MIT",
     "autoload": {
         "psr-0": {
-            "iakio\\growl": "src"
+            "iakio\\GntpNotify": "src"
         }
     },
     "require-dev": {
