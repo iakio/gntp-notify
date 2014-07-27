@@ -8,13 +8,16 @@ use iakio\GntpNotify\IO;
  */
 class IntegrationTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var IO
+     */
     private $io;
 
     function setUp()
     {
         $host = 'localhost';
         $port = 23053;
-        $this->io = new IO($host, $port ,true);
+        $this->io = new IO($host, $port/*, true */);
     }
 
     // http://www.growlforwindows.com/gfw/help/gntp.aspx
@@ -27,4 +30,13 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals("-OK", $result);
     }
 
+    /**
+     * @medium
+     */
+    function test_timeout()
+    {
+        $this->io->connect();
+        $this->io->recv();
+        $this->assertTrue(true);
+    }
 }

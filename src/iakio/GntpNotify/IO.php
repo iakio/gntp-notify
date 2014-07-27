@@ -4,6 +4,7 @@ namespace iakio\GntpNotify;
 
 class IO
 {
+    const TIMEOUT = 3;
     private $host;
     private $port;
     private $fd;
@@ -39,7 +40,8 @@ class IO
 
     public function connect()
     {
-        $this->fd = fsockopen($this->host, $this->port);
+        $this->fd = fsockopen($this->host, $this->port, $errno, $errmsg, static::TIMEOUT);
+        stream_set_timeout($this->fd, static::TIMEOUT);
     }
 
     public function disconnect()
