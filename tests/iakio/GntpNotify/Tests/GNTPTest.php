@@ -5,19 +5,66 @@ use iakio\GntpNotify\GNTP;
 
 class GNTPTest extends \PHPUnit_Framework_TestCase {
 
-    function test_simple_notify()
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject
+     */
+    private $mock;
+
+    function setUp()
     {
-        $io = $this->getMockBuilder("iakio\\GntpNotify\\IO")
+        $this->mock = $this->getMockBuilder("iakio\\GntpNotify\\IO")
             ->setMethods(array("connect", "disconnect", "send", "sendBin", "recv"))
             ->getMock();
-        $io->expects($this->any())
+    }
+
+    function test_simple_notify()
+    {
+        $this->mock->expects($this->any())
             ->method("recv")
-            ->willReturnOnConsecutiveCalls(
+            ->will($this->onConsecutiveCalls(
                 "GNTP/1.0 -OK NONE",
                 false
-            );
+            ));
 
-        $gntp = new GNTP("unittest", $io);
+        $gntp = new GNTP("unittest", $this->mock);
+        $result = $gntp->sendNotify("name", "title", "text");
+        $this->assertEquals("-OK", $result);
+    }
+
+    function test_register_and_retry_notification_if_application_is_unknown()
+    {
+        $this->mock->expects($this->any())
+            ->method("recv")
+            ->will($this->onConsecutiveCalls(
+                "GNTP/1.0 -ERROR NONE",
+                "Error-Code: 401",
+                false,
+                "GNTP/1.0 -OK NONE",
+                false,
+                "GNTP/1.0 -OK NONE",
+                false
+            ));
+
+        $gntp = new GNTP("unittest", $this->mock);
+        $result = $gntp->sendNotify("name", "title", "text");
+        $this->assertEquals("-OK", $result);
+    }
+
+    function test_register_and_retry_notification_if_notification_is_unknown()
+    {
+        $this->mock->expects($this->any())
+            ->method("recv")
+            ->will($this->onConsecutiveCalls(
+                "GNTP/1.0 -ERROR NONE",
+                "Error-Code: 402",
+                false,
+                "GNTP/1.0 -OK NONE",
+                false,
+                "GNTP/1.0 -OK NONE",
+                false
+            ));
+
+        $gntp = new GNTP("unittest", $this->mock);
         $result = $gntp->sendNotify("name", "title", "text");
         $this->assertEquals("-OK", $result);
     }

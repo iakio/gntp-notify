@@ -18,6 +18,24 @@ class GNTP
     }
 
     /**
+     * @param NotificationRequest $notify
+     * @param RegisterRequest $register
+     * @return GNTPResponse
+     */
+    public function notifyOrRegister(NotificationRequest $notify, RegisterRequest $register)
+    {
+        $result = $this->send($notify);
+        if ($result->getErrorCode() === "401" or $result->getErrorCode() === "402") {
+            // UNKNOWN_APPLICATION or UNKNOWN_NOTIFICATION
+            $result = $this->send($register);
+            if ($result->getStatus() === "-OK") {
+                $result = $this->send($notify);
+            }
+        }
+        return $result;
+    }
+
+    /**
      * Shortcut method
      *
      * @param string $notificationName
@@ -30,18 +48,10 @@ class GNTP
     {
         $notification_options = $options;
         $notification_options['text'] = $notificationText;
+        $register = new RegisterRequest($this->applicationName);
+        $register->addNotification($notificationName);
         $notify = new NotificationRequest($this->applicationName, $notificationName, $notificationTitle, $notification_options);
-        $result = $this->send($notify);
-        if ($result->getErrorCode() === "401" or $result->getErrorCode() === "402") {
-            // UNKNOWN_APPLICATION or UNKNOWN_NOTIFICATION
-            $register = new RegisterRequest($this->applicationName);
-            $register->addNotification($notificationName);
-            $result = $this->send($register);
-            if ($result->getStatus() === "-OK") {
-                $result = $this->send($notify);
-            }
-        }
-        return $result->getStatus();
+        return $this->notifyOrRegister($notify, $register)->getStatus();
     }
 
 
