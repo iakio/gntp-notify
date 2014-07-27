@@ -32,6 +32,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @medium
+     * @requires extension pcntl
      */
     function test_timeout()
     {
