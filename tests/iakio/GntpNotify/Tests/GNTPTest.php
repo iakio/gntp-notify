@@ -26,8 +26,8 @@ class GNTPTest extends \PHPUnit_Framework_TestCase {
                 false
             ));
 
-        $gntp = new GNTP("unittest", $this->mock);
-        $result = $gntp->sendNotify("name", "title", "text");
+        $gntp = new GNTP($this->mock);
+        $result = $gntp->sendNotify("unittest", "name", "title", "text");
         $this->assertEquals("-OK", $result);
     }
 
@@ -45,8 +45,8 @@ class GNTPTest extends \PHPUnit_Framework_TestCase {
                 false
             ));
 
-        $gntp = new GNTP("unittest", $this->mock);
-        $result = $gntp->sendNotify("name", "title", "text");
+        $gntp = new GNTP($this->mock);
+        $result = $gntp->sendNotify("unittest", "name", "title", "text");
         $this->assertEquals("-OK", $result);
     }
 
@@ -64,8 +64,8 @@ class GNTPTest extends \PHPUnit_Framework_TestCase {
                 false
             ));
 
-        $gntp = new GNTP("unittest", $this->mock);
-        $result = $gntp->sendNotify("name", "title", "text");
+        $gntp = new GNTP($this->mock);
+        $result = $gntp->sendNotify("unittest", "name", "title", "text");
         $this->assertEquals("-OK", $result);
     }
 }

@@ -8,13 +8,13 @@ Simple GNTP notification library
 
 ```
 <?php
-$gntp = new GNTP("appname", $this->io);
-$gntp->sendNotify("type", "title", "text", array('icon_file' => 'a.png'));
+$gntp = new GNTP();
+$gntp->sendNotify("appname", "type", "title", "text", array('icon_file' => 'a.png'));
 ```
 
 ```
 <?php
-$gntp = new GNTP("appname", $this->io);
+$gntp = new GNTP();
 $register = new RegisterRequest("appname");
 $register->addNotification("type1", array("icon_file" => "a.png");
 $register->addNotification("type2", array("icon_file" => "b.png");

@@ -5,16 +5,14 @@ namespace iakio\GntpNotify;
 class GNTP
 {
     private $io;
-    private $applicationName;
 
-    public function __construct($applicationName, IO $io = null)
+    public function __construct(IO $io = null)
     {
         if (empty($io)) {
             $this->io = new IO();
         } else {
             $this->io = $io;
         }
-        $this->applicationName = $applicationName;
     }
 
     /**
@@ -38,19 +36,20 @@ class GNTP
     /**
      * Shortcut method
      *
+     * @param string $applicationName
      * @param string $notificationName
      * @param string $notificationTitle
      * @param string $notificationText
      * @param array $options
      * @return string
      */
-    public function sendNotify($notificationName, $notificationTitle, $notificationText, $options = array())
+    public function sendNotify($applicationName, $notificationName, $notificationTitle, $notificationText, $options = array())
     {
         $notification_options = $options;
         $notification_options['text'] = $notificationText;
-        $register = new RegisterRequest($this->applicationName);
+        $register = new RegisterRequest($applicationName);
         $register->addNotification($notificationName);
-        $notify = new NotificationRequest($this->applicationName, $notificationName, $notificationTitle, $notification_options);
+        $notify = new NotificationRequest($applicationName, $notificationName, $notificationTitle, $notification_options);
         return $this->notifyOrRegister($notify, $register)->getStatus();
     }
 

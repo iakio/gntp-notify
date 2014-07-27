@@ -25,16 +25,16 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
     // http://www.growlforwindows.com/gfw/help/gntp.aspx
     function test_simplenotify()
     {
-        $gntp = new GNTP("gntp-test-simple", $this->io);
-        $result = $gntp->sendNotify("notifytype1", "title", "text", array('icon_file' => __DIR__ . '/resources/a.png'));
+        $gntp = new GNTP($this->io);
+        $result = $gntp->sendNotify("gntp-test-simple", "notifytype1", "title", "text", array('icon_file' => __DIR__ . '/resources/a.png'));
         $this->assertEquals("-OK", $result);
-        $result = $gntp->sendNotify("notifytype2", "title", "text\r\ntext\r\ntext", array('icon_file' => __DIR__ . '/resources/b.png'));
+        $result = $gntp->sendNotify("gntp-test-simple", "notifytype2", "title", "text\r\ntext\r\ntext", array('icon_file' => __DIR__ . '/resources/b.png'));
         $this->assertEquals("-OK", $result);
     }
 
     function test_multiple()
     {
-        $gntp = new GNTP("gntp-test-multiple", $this->io);
+        $gntp = new GNTP($this->io);
         $register = new RegisterRequest("gntp-test-multiple");
         $register->addNotification("notifytype1");
         $register->addNotification("notifytype2", array("icon_file" => __DIR__ . '/resources/c.png'));
