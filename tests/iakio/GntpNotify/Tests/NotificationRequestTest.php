@@ -20,6 +20,7 @@ class NotificationRequestTest extends \PHPUnit_Framework_TestCase
 
     function test_send_notification_request()
     {
+        $resource_id = md5("DUMMY\n");
         $this->mock->expects($this->any())
             ->method("send")
             ->withConsecutive(
@@ -28,11 +29,22 @@ class NotificationRequestTest extends \PHPUnit_Framework_TestCase
                 array("Notification-Name: name"),
                 array("Notification-Title: title"),
                 array("Notification-Text: text1"),
+                array("Notification-Icon: x-growl-resource://$resource_id"),
+                array(""),
+                array("Identifier: $resource_id"),
+                array("Length: 6"),
+                array(""),
                 array(""),
                 array("")
             );
+        $this->mock->expects($this->once())
+            ->method("sendBin")
+            ->with("DUMMY\n");
 
-        $request = new NotificationRequest("unittest", "name", "title", array("text" => "text1"));
+        $request = new NotificationRequest("unittest", "name", "title", array(
+            "text" => "text1",
+            "icon_file" => __DIR__ . "/dummy.txt"
+        ));
         $request->send($this->mock);
     }
 }
