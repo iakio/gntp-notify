@@ -3,7 +3,8 @@ namespace iakio\GntpNotify\Tests;
 
 use iakio\GntpNotify\NotificationRequest;
 
-class NotificationRequestTest extends \PHPUnit_Framework_TestCase {
+class NotificationRequestTest extends \PHPUnit_Framework_TestCase
+{
 
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject

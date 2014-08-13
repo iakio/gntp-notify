@@ -3,7 +3,8 @@ namespace iakio\GntpNotify\Tests;
 
 use iakio\GntpNotify\RegisterRequest;
 
-class RegisterRequestTest extends \PHPUnit_Framework_TestCase {
+class RegisterRequestTest extends \PHPUnit_Framework_TestCase
+{
 
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
@@ -36,5 +37,4 @@ class RegisterRequestTest extends \PHPUnit_Framework_TestCase {
         $request->addNotification("name");
         $request->send($this->mock);
     }
-
 }

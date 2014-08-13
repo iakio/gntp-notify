@@ -64,7 +64,7 @@ class GNTP
     }
 
 
-    protected  function waitAndClose()
+    protected function waitAndClose()
     {
         $lines = array();
         do {

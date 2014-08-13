@@ -1,8 +1,8 @@
 <?php
 namespace iakio\GntpNotify;
 
-
-class GNTPResponse {
+class GNTPResponse
+{
 
     private $raw;
     private $status;

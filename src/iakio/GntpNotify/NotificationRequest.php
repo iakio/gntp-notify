@@ -1,8 +1,8 @@
 <?php
 namespace iakio\GntpNotify;
 
-
-class NotificationRequest extends GNTPRequest {
+class NotificationRequest extends GNTPRequest
+{
 
     private $applicationName;
     private $notificationName;
