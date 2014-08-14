@@ -35,7 +35,7 @@ class RegisterRequest extends GNTPRequest
         $io->send("Application-Name: " . $this->applicationName);
         if (isset($this->options['icon_file'])) {
             $resource = $this->getResouce($this->options['icon_file']);
-            $io->send("Notification-Icon: x-growl-resource://" . $resource['hash']);
+            $io->send("Application-Icon: x-growl-resource://" . $resource['hash']);
         }
 
         $io->send("Notifications-Count: " . count($this->notifications));
