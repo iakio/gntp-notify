@@ -18,10 +18,10 @@ class RegisterRequestTest extends \PHPUnit_Framework_TestCase
             ->getMock();
     }
 
-    function test_send_register_request()
+    function test_send_register_request_with_resource_file()
     {
         $resource_id = md5("DUMMY\n");
-        $this->mock->expects($this->any())
+        $this->mock->expects($this->atLeastOnce())
             ->method("send")
             ->withConsecutive(
                 array("GNTP/1.0 REGISTER NONE"),
@@ -47,6 +47,28 @@ class RegisterRequestTest extends \PHPUnit_Framework_TestCase
 
         $request = new RegisterRequest("unittest", array("icon_file" => __DIR__ . "/dummy.txt"));
         $request->addNotification("name", array("icon_file" => __DIR__ . "/dummy.txt"));
+        $request->send($this->mock);
+    }
+
+    function test_send_register_request_with_resource_url()
+    {
+        $this->mock->expects($this->atLeastOnce())
+            ->method("send")
+            ->withConsecutive(
+                array("GNTP/1.0 REGISTER NONE"),
+                array("Application-Name: unittest"),
+                array("Application-Icon: http://localhost/resource1.jpg"),
+                array("Notifications-Count: 1"),
+                array(""),
+                array("Notification-Name: name"),
+                array("Notification-Icon: http://localhost/resource2.jpg"),
+                array("Notification-Enabled: True"),
+                array(""),
+                array("")
+            );
+
+        $request = new RegisterRequest("unittest", array("icon_url" => "http://localhost/resource1.jpg"));
+        $request->addNotification("name", array("icon_url" => "http://localhost/resource2.jpg"));
         $request->send($this->mock);
     }
 }

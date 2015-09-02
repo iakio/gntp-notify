@@ -36,9 +36,9 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
     {
         $gntp = new GNTP($this->io);
         $register = new RegisterRequest("gntp-test-multiple");
-        $register->addNotification("notifytype1");
+        $register->addNotification("notifytype1", array("icon_url" => "http://jigokuno.img.jugem.jp/20100730_1892085.gif"));
         $register->addNotification("notifytype2", array("icon_file" => __DIR__ . '/resources/c.png'));
-        $notify = new NotificationRequest("gntp-test-multiple", "notifytype2", "title");
+        $notify = new NotificationRequest("gntp-test-multiple", "notifytype1", "title");
         $result = $gntp->notifyOrRegister($notify, $register);
         $this->assertEquals("-OK", $result->getStatus());
     }

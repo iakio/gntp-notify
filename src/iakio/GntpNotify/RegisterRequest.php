@@ -36,6 +36,8 @@ class RegisterRequest extends GNTPRequest
         if (isset($this->options['icon_file'])) {
             $resource = $this->getResouce($this->options['icon_file']);
             $io->send("Application-Icon: x-growl-resource://" . $resource['hash']);
+        } elseif (isset($this->options['icon_url'])) {
+            $io->send("Application-Icon: " . $this->options['icon_url']);
         }
 
         $io->send("Notifications-Count: " . count($this->notifications));
@@ -45,6 +47,8 @@ class RegisterRequest extends GNTPRequest
             if (isset($notification['icon_file'])) {
                 $resource = $this->getResouce($notification['icon_file']);
                 $io->send("Notification-Icon: x-growl-resource://" . $resource['hash']);
+            } elseif (isset($notification['icon_url'])) {
+                $io->send("Notification-Icon: " . $notification['icon_url']);
             }
             $io->send("Notification-Enabled: True");
             $io->send("");

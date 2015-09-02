@@ -16,7 +16,7 @@ $gntp->sendNotify("appname", "type", "title", "text", array('icon_file' => 'a.pn
 <?php
 $gntp = new GNTP();
 $register = new RegisterRequest("appname");
-$register->addNotification("type1", array("icon_file" => "a.png");
+$register->addNotification("type1", array("icon_url" => "http://localhost/a.png");
 $register->addNotification("type2", array("icon_file" => "b.png");
 $notify = new NotificationRequest("appname", "type1", "title", array("text" => "text");
 
