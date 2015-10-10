@@ -19,7 +19,9 @@ class IO
 
     public function send($msg)
     {
-        fwrite($this->fd, str_replace("\r\n", "\n", $msg) . "\r\n");
+        if (@fwrite($this->fd, str_replace("\r\n", "\n", $msg) . "\r\n") === false) {
+            throw new IOException("fwrite()");
+        }
         if ($this->debug) {
             echo $msg . "\n";
         }
@@ -27,7 +29,9 @@ class IO
 
     public function sendBin($msg)
     {
-        fwrite($this->fd, $msg . "\r\n");
+        if (@fwrite($this->fd, $msg . "\r\n") === false) {
+            throw new IOException("fwrite()");
+        }
         if ($this->debug) {
             echo bin2hex($msg) . "\n";
         }
@@ -35,7 +39,10 @@ class IO
 
     public function recv()
     {
-        if (false === ($msg = fgets($this->fd))) {
+        if (false === ($msg = @fgets($this->fd))) {
+            if (!@feof($this->fd)) {
+                throw new IOException("fgets()");
+            }
             return false;
         }
         if ($this->debug) {
@@ -46,7 +53,10 @@ class IO
 
     public function connect()
     {
-        $this->fd = fsockopen($this->host, $this->port, $errno, $errmsg, static::TIMEOUT);
+        $this->fd = @fsockopen($this->host, $this->port, $errno, $errmsg, static::TIMEOUT);
+        if ($this->fd === false) {
+            throw new IOException($errmsg, $errno);
+        }
         stream_set_timeout($this->fd, static::TIMEOUT);
     }
 
